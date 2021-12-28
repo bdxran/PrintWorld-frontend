@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  selector: 'app-model-create',
+  templateUrl: './model-create.component.html',
+  styleUrls: ['./model-create.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class ModelCreateComponent implements OnInit {
 
   constructor(private router: Router) { }
 

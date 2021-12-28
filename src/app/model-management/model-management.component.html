@@ -1,0 +1,38 @@
+<app-header></app-header>
+<div class="row g-3">
+  <div class="col-sm">
+    <button class="btn btn-primary btn-create" (click)="navigate('createModel')">Créer</button>
+  </div>
+  <div class="col-sm">
+    <div class="input-group">
+      <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
+             aria-describedby="search-addon"/>
+      <button type="button" class="btn btn-outline-primary">search</button>
+    </div>
+  </div>
+</div>
+<div class="card-model">
+  <app-model-card></app-model-card>
+  <app-model-card></app-model-card>
+  <app-model-card></app-model-card>
+  <app-model-card></app-model-card>
+</div>
+<div class="page-list">
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+      <li class="page-item"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

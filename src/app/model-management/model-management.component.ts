@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  selector: 'app-model-management',
+  templateUrl: './model-management.component.html',
+  styleUrls: ['./model-management.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class ModelManagementComponent implements OnInit {
 
   constructor(private router: Router) { }
 
@@ -16,4 +16,5 @@ export class HeaderComponent implements OnInit {
   public navigate(direction: any) {
     this.router.navigate([direction]);
   }
+
 }

@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  selector: 'app-model-card',
+  templateUrl: './model-card.component.html',
+  styleUrls: ['./model-card.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class ModelCardComponent implements OnInit {
 
   constructor(private router: Router) { }
 

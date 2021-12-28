@@ -1,0 +1,47 @@
+<app-header></app-header>
+<form class="form">
+  <div class="mb-3">
+    <label for="name" class="form-label">Nom du modèle</label>
+    <input type="text" class="form-control" id="name">
+  </div>
+  <div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea class="form-control" id="description" rows="3"></textarea>
+  </div>
+  <div class="row g-3">
+    <div class="col-sm">
+      <label for="numberElement" class="form-label">Nombre d'object</label>
+      <input type="number" class="form-control" id="numberElement">
+    </div>
+    <div class="col-sm">
+      <label for="category" class="form-label">Catégorie</label>
+      <select class="form-select" id="category">
+        <option selected>Défaut</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+    </div>
+    <div class="col-sm">
+      <label for="subCategory" class="form-label">Sous catégorie</label>
+      <select class="form-select" id="subCategory">
+        <option selected>Défaut</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+    </div>
+  </div>
+  <div class="mb-3">
+    <label for="modelFile" class="form-label">Upload modèle 3D</label>
+    <input class="form-control" type="file" id="modelFile">
+  </div>
+  <div class="mb-3">
+    <label for="photoFile" class="form-label">Upload photos</label>
+    <input class="form-control" type="file" id="photoFile" multiple>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary" (click)="navigate('')">Annuler</button>
+    <button class="btn btn-primary" type="submit">Valider</button>
+  </div>
+</form>
