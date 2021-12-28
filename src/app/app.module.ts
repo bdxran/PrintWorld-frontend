@@ -8,6 +8,8 @@ import { ModelManagementComponent } from './model-management/model-management.co
 import { ModelCardComponent } from './model-management/model-card/model-card.component';
 import { ModelCreateComponent } from './model-management/model-create/model-create.component';
 import { ModelModifyComponent } from './model-management/model-modify/model-modify.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -20,7 +22,10 @@ import { ModelModifyComponent } from './model-management/model-modify/model-modi
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

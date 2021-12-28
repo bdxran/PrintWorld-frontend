@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
+import {Model, ModelService} from "../../services/model.service";
 
 @Component({
   selector: 'app-model-create',
@@ -8,9 +9,28 @@ import {Router} from "@angular/router";
 })
 export class ModelCreateComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  public model: Model | undefined;
+  public name: string = "";
+  public description: string = "";
+  public numberElement: number = 0;
+
+  constructor(private router: Router, private modelService: ModelService) {
+  }
 
   ngOnInit(): void {
+  }
+
+  public createModel() {
+    this.model = new Model(undefined, this.name, this.description, undefined, undefined, this.numberElement, undefined, undefined)
+    this.modelService.createModel(this.model).subscribe({
+      next(data) {
+        console.log(data);
+      },
+      error(error) {
+        console.log(error);
+      }
+    })
+    this.router.navigate(['']);
   }
 
   public navigate(direction: any) {
