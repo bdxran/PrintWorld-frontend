@@ -23,6 +23,10 @@ export class Model {
     this.note = note;
     this.size = size;
   }
+
+  public getId() {
+    return this.id;
+  }
 }
 
 @Injectable({
@@ -33,8 +37,15 @@ export class ModelService {
   constructor(private http: HttpClient) {
   }
 
-  public createModel(model: Model) {
-    let modelJson = JSON.stringify(model)
-    return this.http.post<any>(`${API_URL}/model/create`, modelJson);
+  public createModel(formData: FormData) {
+    return this.http.post<String>(`${API_URL}/model/create`, formData);
+  }
+
+  public modifyModel(formData: FormData) {
+    return this.http.post<String>(`${API_URL}/model/modify`, formData);
+  }
+
+  public deleteModel(model: Model) {
+    return this.http.delete<String>(`${API_URL}/model/delete`, {body: {model}});
   }
 }

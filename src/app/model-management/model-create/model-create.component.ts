@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {Model, ModelService} from "../../services/model.service";
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-model-create',
@@ -9,28 +11,48 @@ import {Model, ModelService} from "../../services/model.service";
 })
 export class ModelCreateComponent implements OnInit {
 
-  public model: Model | undefined;
-  public name: string = "";
-  public description: string = "";
-  public numberElement: number = 0;
+  public modelForm = new FormGroup({
+    name: new FormControl(),
+    description: new FormControl(),
+    numberElement: new FormControl(),
+    category: new FormControl(),
+    subCategory: new FormControl(),
+    zip: new FormControl()
+  })
 
-  constructor(private router: Router, private modelService: ModelService) {
+  constructor(private router: Router, private modelService: ModelService,
+              public fb: FormBuilder) {
   }
 
   ngOnInit(): void {
   }
 
+  upload(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+    this.modelForm.patchValue({
+      zip: file
+    });
+    this.modelForm.get('zip').updateValueAndValidity()
+  }
+
   public createModel() {
-    this.model = new Model(undefined, this.name, this.description, undefined, undefined, this.numberElement, undefined, undefined)
-    this.modelService.createModel(this.model).subscribe({
-      next(data) {
+    console.log("Create Model")
+    let model = new Model(undefined, this.modelForm.get("name").value, this.modelForm.get("description").value,
+      undefined, undefined, this.modelForm.get("numberElement").value, undefined, undefined)
+    let modelJson = JSON.stringify(model)
+    var formData: any = new FormData();
+    formData.append("file", this.modelForm.get("zip").value);
+    formData.append("model", modelJson);
+
+    this.modelService.createModel(formData).subscribe(
+      data => {
         console.log(data);
+        this.router.navigate(['']);
       },
-      error(error) {
+      error => {
         console.log(error);
       }
-    })
-    this.router.navigate(['']);
+    )
   }
 
   public navigate(direction: any) {
