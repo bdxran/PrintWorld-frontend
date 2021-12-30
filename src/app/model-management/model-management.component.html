@@ -12,10 +12,19 @@
   </div>
 </div>
 <div class="card-model">
-  <app-model-card></app-model-card>
-  <app-model-card></app-model-card>
-  <app-model-card></app-model-card>
-  <app-model-card></app-model-card>
+  <div *ngFor="let model of this.models">
+    <div class="profilebox profilebox1">
+      <div class="SocialIcons">
+        <a (click)="navigate('modifyModel')"><img src="../../../assets/images/icone_plus.png" class="icone"/><i
+          class="fa"></i></a>
+        <a (click)="deleteModel()"><img src="../../../assets/images/icone_poubelle.png" class="icone"/><i
+          class="fa icone_delete"></i></a>
+      </div>
+      <div class="profileInfo">
+        <h3>{{model["name"]}}</h3>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="page-list">
   <nav aria-label="Page navigation example">
@@ -25,9 +34,9 @@
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item" *ngFor="let index of counter(this.numberPage);let i = index">
+        <a class="page-link" (click)="getPage(i)">{{i+1}}</a>
+      </li>
       <li class="page-item">
         <a class="page-link" href="#" aria-label="Next">
           <span aria-hidden="true">&raquo;</span>

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {API_URL} from "../../app-constants";
 
 export class Model {
@@ -35,6 +35,14 @@ export class Model {
 export class ModelService {
 
   constructor(private http: HttpClient) {
+  }
+
+  public findModelById(id: String) {
+    return this.http.get<String>(`${API_URL}/model/byid/{`+id+'}');
+  }
+
+  public findAllModel(page: number, limit: number) {
+    return this.http.get<String>(`${API_URL}/model/all`, {params: {page: page, limit:limit}});
   }
 
   public createModel(formData: FormData) {
