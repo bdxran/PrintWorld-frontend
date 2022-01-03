@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {Router} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {Router, ActivatedRoute} from "@angular/router";
 import {Model, ModelService} from "../../services/model.service";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 
@@ -10,6 +10,10 @@ import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 })
 export class ModelModifyComponent implements OnInit {
 
+  public id: string;
+  private modelsJson: any;
+  public model: Model;
+
   public modelForm = new FormGroup({
     name: new FormControl(),
     description: new FormControl(),
@@ -19,10 +23,22 @@ export class ModelModifyComponent implements OnInit {
     zip: new FormControl()
   })
 
-  constructor(private router: Router, private modelService: ModelService,
-              public fb: FormBuilder) { }
+  constructor(private router: Router, private routerActive: ActivatedRoute,
+              private modelService: ModelService, public fb: FormBuilder) {
+  }
 
   ngOnInit(): void {
+    this.id = this.routerActive.snapshot.paramMap.get("id");
+    console.log(this.id)
+
+    this.modelService.findModelById(this.id).subscribe(
+      data => {
+        this.modelsJson = JSON.stringify(data);
+        this.model = JSON.parse(this.modelsJson);
+      },
+      error => {
+        console.log(error);
+      })
   }
 
   upload(event: Event) {

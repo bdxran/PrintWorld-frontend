@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {API_URL} from "../../app-constants";
 
 export class Model {
@@ -23,10 +23,6 @@ export class Model {
     this.note = note;
     this.size = size;
   }
-
-  public getId() {
-    return this.id;
-  }
 }
 
 @Injectable({
@@ -38,7 +34,7 @@ export class ModelService {
   }
 
   public findModelById(id: String) {
-    return this.http.get<String>(`${API_URL}/model/byid/{`+id+'}');
+    return this.http.get<String>(`${API_URL}/model/byid/`+id);
   }
 
   public findAllModel(page: number, limit: number) {
@@ -53,7 +49,7 @@ export class ModelService {
     return this.http.post<String>(`${API_URL}/model/modify`, formData);
   }
 
-  public deleteModel(model: Model) {
-    return this.http.delete<String>(`${API_URL}/model/delete`, {body: {model}});
+  public deleteModel(id: string) {
+    return this.http.delete<String>(`${API_URL}/model/delete/`+id);
   }
 }

@@ -1,7 +1,7 @@
 <app-header></app-header>
 <div class="row g-3">
   <div class="col-sm">
-    <button class="btn btn-primary btn-create" (click)="navigate('createModel')">Créer</button>
+    <button class="btn btn-primary btn-create" (click)="navigate('createModel', undefined)">Créer</button>
   </div>
   <div class="col-sm">
     <div class="input-group">
@@ -15,9 +15,9 @@
   <div *ngFor="let model of this.models">
     <div class="profilebox profilebox1">
       <div class="SocialIcons">
-        <a (click)="navigate('modifyModel')"><img src="../../../assets/images/icone_plus.png" class="icone"/><i
+        <a (click)="navigate('modifyModel', model['id'])"><img src="../../../assets/images/icone_plus.png" class="icone"/><i
           class="fa"></i></a>
-        <a (click)="deleteModel()"><img src="../../../assets/images/icone_poubelle.png" class="icone"/><i
+        <a (click)="deleteModel(model['id'])"><img src="../../../assets/images/icone_poubelle.png" class="icone"/><i
           class="fa icone_delete"></i></a>
       </div>
       <div class="profileInfo">
@@ -30,7 +30,7 @@
   <nav aria-label="Page navigation example">
     <ul class="pagination">
       <li class="page-item">
-        <a class="page-link" href="#" aria-label="Previous">
+        <a class="page-link" (click)="getPreviewPage()" aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
@@ -38,7 +38,7 @@
         <a class="page-link" (click)="getPage(i)">{{i+1}}</a>
       </li>
       <li class="page-item">
-        <a class="page-link" href="#" aria-label="Next">
+        <a class="page-link" (click)="getNextPage()" aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>

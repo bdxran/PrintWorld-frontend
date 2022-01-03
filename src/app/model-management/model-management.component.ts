@@ -10,15 +10,22 @@ import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 })
 export class ModelManagementComponent implements OnInit {
 
-  public modelsJson: any;
+  private modelsJson: any;
   public models: Array<Model>;
   public numberPage: number;
+  public indexPage: number;
 
   constructor(private router: Router, private modelService: ModelService) {
   }
 
   ngOnInit(): void {
-    this.modelService.findAllModel(0, 4).subscribe(
+    this.indexPage = 0;
+    this.getModelForPage(this.indexPage);
+  }
+
+  public getModelForPage(index: number) {
+    console.log("load page : " + index);
+    this.modelService.findAllModel(index, 4).subscribe(
       modelResponse => {
         this.modelsJson = JSON.stringify(modelResponse);
         this.modelsJson = JSON.parse(this.modelsJson);
@@ -28,19 +35,35 @@ export class ModelManagementComponent implements OnInit {
     )
   }
 
-  counter(i: number) {
+  public counter(i: number) {
     return new Array(i);
   }
 
   public getPage(index: number) {
-    console.log(index);
+    this.indexPage = index;
+    this.getModelForPage(this.indexPage)
+    console.log(this.indexPage);
   }
 
-  public deleteModel() {
-    let model = new Model("m-20211229-000001", "test", "test",
-      "test-upload", "zip", 5, 0, 0);
-    console.log("Delete model : " + model.getId());
-    this.modelService.deleteModel(model).subscribe(
+  public getPreviewPage() {
+    if (this.indexPage > 0) {
+      this.indexPage--;
+    }
+    this.getModelForPage(this.indexPage)
+    console.log(this.indexPage);
+  }
+
+  public getNextPage() {
+    if (this.indexPage < this.numberPage - 1) {
+      this.indexPage++;
+    }
+    this.getModelForPage(this.indexPage)
+    console.log(this.indexPage);
+  }
+
+  public deleteModel(id: string) {
+    console.log("Delete model : " + id);
+    this.modelService.deleteModel(id).subscribe(
       data => {
         console.log(data);
         this.router.navigate(['']);
@@ -51,8 +74,12 @@ export class ModelManagementComponent implements OnInit {
     )
   }
 
-  public navigate(direction: any) {
-    this.router.navigate([direction]);
+  public navigate(direction: any, id: any) {
+    if (id != undefined) {
+      this.router.navigate([direction, id]);
+    } else {
+      this.router.navigate([direction]);
+    }
   }
 
 }

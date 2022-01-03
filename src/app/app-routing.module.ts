@@ -7,7 +7,7 @@ import {ModelCreateComponent} from "./model-management/model-create/model-create
 const routes: Routes = [
   {path: "", component: ModelManagementComponent},
   {path: "createModel", component: ModelCreateComponent},
-  {path: "modifyModel", component: ModelModifyComponent},
+  {path: "modifyModel/:id", component: ModelModifyComponent},
 ];
 
 @NgModule({
