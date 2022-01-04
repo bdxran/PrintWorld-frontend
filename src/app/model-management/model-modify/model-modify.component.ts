@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router, ActivatedRoute} from "@angular/router";
 import {Model, ModelService} from "../../services/model.service";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {Category} from "../../services/category.service";
 
 @Component({
   selector: 'app-model-modify',
@@ -13,6 +14,16 @@ export class ModelModifyComponent implements OnInit {
   public id: string;
   private modelsJson: any;
   public model: Model;
+  public categories: Category[] = [
+    // @ts-ignore
+    {id: 0, name:"Object"},
+    // @ts-ignore
+    {id: 1, name:"Object1"},
+    // @ts-ignore
+    {id: 2, name:"Object2"},
+    // @ts-ignore
+    {id: 3, name:"Object3"}
+  ];
 
   public modelForm = new FormGroup({
     name: new FormControl(),
@@ -35,6 +46,13 @@ export class ModelModifyComponent implements OnInit {
       data => {
         this.modelsJson = JSON.stringify(data);
         this.model = JSON.parse(this.modelsJson);
+        this.modelForm = this.fb.group({
+          name: [this.model["name"]],
+          description: [this.model["description"]],
+          numberElement: [this.model["numberElement"]],
+          category: [this.model["categoryId"]],
+          subCategory: [this.model["subCategoryIds"]],
+        });
       },
       error => {
         console.log(error);
