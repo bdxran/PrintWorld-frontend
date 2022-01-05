@@ -3,6 +3,7 @@ import {Router, ActivatedRoute} from "@angular/router";
 import {Model, ModelService} from "../../services/model.service";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {Category} from "../../services/category.service";
+import {SubCategory} from "../../services/sub-category.service";
 
 @Component({
   selector: 'app-model-modify',
@@ -11,10 +12,25 @@ import {Category} from "../../services/category.service";
 })
 export class ModelModifyComponent implements OnInit {
 
+  public disabled = false;
+  public ShowFilter = false;
+  public limitSelection = false;
+  public selectedItems: any;
+  public dropdownSettings: any = {};
   public id: string;
   private modelsJson: any;
   public model: Model;
   public categories: Category[] = [
+    // @ts-ignore
+    {id: 0, name:"Object"},
+    // @ts-ignore
+    {id: 1, name:"Object1"},
+    // @ts-ignore
+    {id: 2, name:"Object2"},
+    // @ts-ignore
+    {id: 3, name:"Object3"}
+  ];
+  public subCategories: SubCategory[] = [
     // @ts-ignore
     {id: 0, name:"Object"},
     // @ts-ignore
@@ -42,16 +58,28 @@ export class ModelModifyComponent implements OnInit {
     this.id = this.routerActive.snapshot.paramMap.get("id");
     console.log(this.id)
 
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'name',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      allowSearchFilter: this.ShowFilter
+    };
+
     this.modelService.findModelById(this.id).subscribe(
       data => {
         this.modelsJson = JSON.stringify(data);
         this.model = JSON.parse(this.modelsJson);
+        // @ts-ignore
+        this.selectedItems = [this.model["subCategoryIds"]];
         this.modelForm = this.fb.group({
           name: [this.model["name"]],
           description: [this.model["description"]],
           numberElement: [this.model["numberElement"]],
           category: [this.model["categoryId"]],
-          subCategory: [this.model["subCategoryIds"]],
+          subCategory: [this.selectedItems],
         });
       },
       error => {
@@ -89,5 +117,25 @@ export class ModelModifyComponent implements OnInit {
 
   public navigate(direction: any) {
     this.router.navigate([direction]);
+  }
+
+
+  public onItemSelect(item: any) {
+    console.log('onItemSelect', item);
+  }
+  public onSelectAll(items: any) {
+    console.log('onSelectAll', items);
+  }
+  public toogleShowFilter() {
+    this.ShowFilter = !this.ShowFilter;
+    this.dropdownSettings = Object.assign({}, this.dropdownSettings, { allowSearchFilter: this.ShowFilter });
+  }
+
+  public handleLimitSelection() {
+    if (this.limitSelection) {
+      this.dropdownSettings = Object.assign({}, this.dropdownSettings, { limitSelection: 2 });
+    } else {
+      this.dropdownSettings = Object.assign({}, this.dropdownSettings, { limitSelection: null });
+    }
   }
 }

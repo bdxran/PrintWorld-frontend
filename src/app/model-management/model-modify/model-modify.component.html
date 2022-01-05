@@ -30,6 +30,15 @@
         <option value="2">Two</option>
         <option value="3">Three</option>
       </select>
+      <ng-multiselect-dropdown
+        name="subCategory"
+        placeholder="Select sous catégories"
+        [data]="subCategories"
+        formControlName="subCategory"
+        [disabled]="disabled"
+        [settings]="dropdownSettings"
+        (onSelect)="onItemSelect($event)">
+      </ng-multiselect-dropdown>
     </div>
   </div>
   <div class="mb-3">
