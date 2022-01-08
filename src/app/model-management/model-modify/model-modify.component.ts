@@ -12,11 +12,6 @@ import {SubCategory} from "../../services/sub-category.service";
 })
 export class ModelModifyComponent implements OnInit {
 
-  public disabled = false;
-  public ShowFilter = false;
-  public limitSelection = false;
-  public selectedItems: any;
-  public dropdownSettings: any = {};
   public id: string;
   private modelsJson: any;
   public model: Model;
@@ -58,28 +53,17 @@ export class ModelModifyComponent implements OnInit {
     this.id = this.routerActive.snapshot.paramMap.get("id");
     console.log(this.id)
 
-    this.dropdownSettings = {
-      singleSelection: false,
-      idField: 'id',
-      textField: 'name',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 3,
-      allowSearchFilter: this.ShowFilter
-    };
-
     this.modelService.findModelById(this.id).subscribe(
       data => {
         this.modelsJson = JSON.stringify(data);
         this.model = JSON.parse(this.modelsJson);
         // @ts-ignore
-        this.selectedItems = [this.model["subCategoryIds"]];
         this.modelForm = this.fb.group({
           name: [this.model["name"]],
           description: [this.model["description"]],
           numberElement: [this.model["numberElement"]],
           category: [this.model["categoryId"]],
-          subCategory: [this.selectedItems],
+          subCategory: [this.model["subCategoryIds"]],
         });
       },
       error => {
@@ -98,7 +82,7 @@ export class ModelModifyComponent implements OnInit {
   public createModel() {
     console.log("Modify Model")
     let model = new Model(undefined, this.modelForm.get("name").value, this.modelForm.get("description").value,
-      undefined, undefined, this.modelForm.get("numberElement").value, undefined, undefined)
+      undefined, undefined, this.modelForm.get("numberElement").value, undefined, undefined, this.modelForm.get("category").value, this.modelForm.get("subCategory").value)
     let modelJson = JSON.stringify(model)
     var formData: any = new FormData();
     formData.append("file", this.modelForm.get("zip").value);
@@ -117,25 +101,5 @@ export class ModelModifyComponent implements OnInit {
 
   public navigate(direction: any) {
     this.router.navigate([direction]);
-  }
-
-
-  public onItemSelect(item: any) {
-    console.log('onItemSelect', item);
-  }
-  public onSelectAll(items: any) {
-    console.log('onSelectAll', items);
-  }
-  public toogleShowFilter() {
-    this.ShowFilter = !this.ShowFilter;
-    this.dropdownSettings = Object.assign({}, this.dropdownSettings, { allowSearchFilter: this.ShowFilter });
-  }
-
-  public handleLimitSelection() {
-    if (this.limitSelection) {
-      this.dropdownSettings = Object.assign({}, this.dropdownSettings, { limitSelection: 2 });
-    } else {
-      this.dropdownSettings = Object.assign({}, this.dropdownSettings, { limitSelection: null });
-    }
   }
 }

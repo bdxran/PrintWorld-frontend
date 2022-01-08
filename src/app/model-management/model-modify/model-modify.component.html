@@ -24,25 +24,14 @@
     </div>
     <div class="col-sm">
       <label for="subCategory" class="form-label">Sous catégorie</label>
-      <select class="form-select" id="subCategory" formControlName="subCategory">
-        <option selected>Défaut</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
+      <select class="form-select" id="subCategory" formControlName="subCategory" multiple>
+        <option [value]="subCategory" *ngFor="let subCategory of this.subCategories" [ngValue]="subCategory['id']">{{subCategory['name']}}</option>
       </select>
-      <ng-multiselect-dropdown
-        name="subCategory"
-        placeholder="Select sous catégories"
-        [data]="subCategories"
-        formControlName="subCategory"
-        [disabled]="disabled"
-        [settings]="dropdownSettings"
-        (onSelect)="onItemSelect($event)">
-      </ng-multiselect-dropdown>
     </div>
   </div>
   <div class="mb-3">
     <label for="modelFile" class="form-label">Upload modèle 3D</label>
+    <p>Fichier présent : {{this.model["nameFile"]}}</p>
     <input class="form-control" type="file" id="modelFile" (change)="upload($event)">
   </div>
   <div class="mb-3">

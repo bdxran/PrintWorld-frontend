@@ -4,6 +4,7 @@ import {Model, ModelService} from "../../services/model.service";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {Category} from "../../services/category.service";
+import {SubCategory} from "../../services/sub-category.service";
 
 @Component({
   selector: 'app-model-create',
@@ -13,6 +14,17 @@ import {Category} from "../../services/category.service";
 export class ModelCreateComponent implements OnInit {
 
   public categories: Category[] = [
+    // @ts-ignore
+    {id: 0, name:"Object"},
+    // @ts-ignore
+    {id: 1, name:"Object1"},
+    // @ts-ignore
+    {id: 2, name:"Object2"},
+    // @ts-ignore
+    {id: 3, name:"Object3"}
+  ];
+
+  public subCategories: SubCategory[] = [
     // @ts-ignore
     {id: 0, name:"Object"},
     // @ts-ignore
@@ -50,7 +62,7 @@ export class ModelCreateComponent implements OnInit {
   public createModel() {
     console.log("Create Model")
     let model = new Model(undefined, this.modelForm.get("name").value, this.modelForm.get("description").value,
-      undefined, undefined, this.modelForm.get("numberElement").value, undefined, undefined, this.modelForm.get("category").value, undefined)
+      undefined, undefined, this.modelForm.get("numberElement").value, undefined, undefined, this.modelForm.get("category").value, this.modelForm.get("subCategory").value)
     let modelJson = JSON.stringify(model)
     var formData: any = new FormData();
     formData.append("file", this.modelForm.get("zip").value);

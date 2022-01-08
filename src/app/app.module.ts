@@ -28,8 +28,7 @@ import {NgMultiSelectDropDownModule} from "ng-multiselect-dropdown";
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    CommonModule,
-    NgMultiSelectDropDownModule
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
