@@ -35,13 +35,17 @@ export class ModelCreateComponent implements OnInit {
     {id: 3, name:"Object3"}
   ];
 
+  public images : string[] = [];
+  public imageFiles : File[] = [];
+  public photoSource : FileList;
   public modelForm = new FormGroup({
     name: new FormControl(),
     description: new FormControl(),
     numberElement: new FormControl(),
     category: new FormControl(),
     subCategory: new FormControl(),
-    zip: new FormControl()
+    zip: new FormControl(),
+    photoFile: new FormControl()
   })
 
   constructor(private router: Router, private modelService: ModelService,
@@ -59,13 +63,55 @@ export class ModelCreateComponent implements OnInit {
     this.modelForm.get('zip').updateValueAndValidity()
   }
 
+  get formValue(){
+    return this.modelForm.controls;
+  }
+
+  onFileChange(event: Event) {
+    if ((event.target as HTMLInputElement).files && (event.target as HTMLInputElement).files[0]) {
+      this.photoSource = (event.target as HTMLInputElement).files;
+      var filesAmount = (event.target as HTMLInputElement).files.length;
+      for (let i = 0; i < filesAmount; i++) {
+        var reader = new FileReader();
+        reader.onload = (event:any) => {
+          // Push Base64 string
+          this.images.push(event.target.result);
+          this.patchValues();
+        }
+        reader.readAsDataURL((event.target as HTMLInputElement).files[i]);
+      }
+    }
+  }
+
+  // Patch form Values
+  patchValues(){
+    this.modelForm.patchValue({
+      photoFile: this.photoSource
+    });
+    this.modelForm.get('photoFile').updateValueAndValidity()
+  }
+
+  // Remove Image
+  removeImage(){
+    this.images = [];
+    this.photoSource = undefined;
+    this.patchValues();
+  }
+
   public createModel() {
     console.log("Create Model")
     let model = new Model(undefined, this.modelForm.get("name").value, this.modelForm.get("description").value,
       undefined, undefined, this.modelForm.get("numberElement").value, undefined, undefined, this.modelForm.get("category").value, this.modelForm.get("subCategory").value)
     let modelJson = JSON.stringify(model)
     var formData: any = new FormData();
+
+    for (let i = 0; i < this.modelForm.get("photoFile").value.length; i++) {
+      let file = this.modelForm.get("photoFile").value.item(i);
+      this.imageFiles.push(file)
+    }
+
     formData.append("file", this.modelForm.get("zip").value);
+    formData.append("images", this.imageFiles);
     formData.append("model", modelJson);
 
     this.modelService.createModel(formData).subscribe(

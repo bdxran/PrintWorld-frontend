@@ -32,7 +32,13 @@
   </div>
   <div class="mb-3">
     <label for="photoFile" class="form-label">Upload photos</label>
-    <input class="form-control" type="file" id="photoFile" multiple>
+    <button type="button" class="btn btn-danger btn-sm" (click)="removeImage()">Remove</button><br>
+    <input id="photoFile" type="file" class="form-control-file" multiple="" (change)="onFileChange($event)">
+    <div class="preview-wrapper">
+      <div class="img-preview" *ngFor='let url of images'>
+        <img [src]="url" width="200px">
+      </div>
+    </div>
   </div>
   <div class="col-12">
     <button class="btn btn-primary" (click)="navigate('')">Annuler</button>
