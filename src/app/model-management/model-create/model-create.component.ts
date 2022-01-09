@@ -36,7 +36,6 @@ export class ModelCreateComponent implements OnInit {
   ];
 
   public images : string[] = [];
-  public imageFiles : File[] = [];
   public photoSource : FileList;
   public modelForm = new FormGroup({
     name: new FormControl(),
@@ -105,13 +104,10 @@ export class ModelCreateComponent implements OnInit {
     let modelJson = JSON.stringify(model)
     var formData: any = new FormData();
 
-    for (let i = 0; i < this.modelForm.get("photoFile").value.length; i++) {
-      let file = this.modelForm.get("photoFile").value.item(i);
-      this.imageFiles.push(file)
-    }
-
     formData.append("file", this.modelForm.get("zip").value);
-    formData.append("images", this.imageFiles);
+    for (let i = 0; i < this.modelForm.get("photoFile").value.length; i++) {
+      formData.append("images", this.modelForm.get("photoFile").value.item(i));
+    }
     formData.append("model", modelJson);
 
     this.modelService.createModel(formData).subscribe(
