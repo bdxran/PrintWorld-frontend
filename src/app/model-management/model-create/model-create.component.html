@@ -32,11 +32,11 @@
   </div>
   <div class="mb-3">
     <label for="photoFile" class="form-label">Upload photos</label>
-    <button type="button" class="btn btn-danger btn-sm" (click)="removeImage()">Remove</button><br>
-    <input id="photoFile" type="file" class="form-control-file" multiple="" (change)="onFileChange($event)">
-    <div class="preview-wrapper">
-      <div class="img-preview" *ngFor='let url of images'>
-        <img [src]="url" width="200px">
+    <div *ngFor="let in of counter(index); index as count">
+      <input id="photoFile" type="file" class="form-control-file" (change)="imagePreview($event)">
+      <button type="button" class="btn btn-danger btn-sm" (click)="remove(count+1)">Remove</button>
+      <div *ngIf="filePaths.get(count+1) && filePaths.get(count+1) !== ''">
+        <img [src]="filePaths.get(count+1)" [alt]="images.get(count+1)" width="200px">
       </div>
     </div>
   </div>

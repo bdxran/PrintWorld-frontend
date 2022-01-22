@@ -13,10 +13,11 @@ export class Model {
   private size: number | undefined;
   private categoryId: number | undefined;
   private subCategoryIds: Array<number> | undefined;
+  private imageIds: Array<string> | undefined;
 
   constructor(id?: string, name?: string, description?: string, nameFile?: string,
               extension?: string, numberElement?: number, note?: number, size?: number,
-              categoryId?: number, subCategoryIds?: Array<number>) {
+              categoryId?: number, subCategoryIds?: Array<number>, imageIds?: Array<string>) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -27,6 +28,7 @@ export class Model {
     this.size = size;
     this.categoryId = categoryId;
     this.subCategoryIds = subCategoryIds;
+    this.imageIds = imageIds;
   }
 }
 

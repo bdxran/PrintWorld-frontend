@@ -1,5 +1,5 @@
 <app-header></app-header>
-<form class="form" [formGroup]="modelForm" (ngSubmit)="createModel()">
+<form class="form" [formGroup]="modelForm" (ngSubmit)="modifyModel()">
   <div class="mb-3">
     <label for="name" class="form-label">Nom du modèle</label>
     <input type="text" formControlName="name" class="form-control" id="name" name="name"
@@ -36,7 +36,13 @@
   </div>
   <div class="mb-3">
     <label for="photoFile" class="form-label">Upload photos</label>
-    <input class="form-control" type="file" id="photoFile" multiple>
+    <div *ngFor="let in of counter(index); index as count">
+      <input id="photoFile" type="file" class="form-control-file" (change)="imagePreview($event)">
+      <button type="button" class="btn btn-danger btn-sm" (click)="remove(count+1)">Remove</button>
+      <div *ngIf="filePaths.get(count+1) && filePaths.get(count+1) !== ''">
+        <img [src]="filePaths.get(count+1)" [alt]="images.get(count+1)" width="200px">
+      </div>
+    </div>
   </div>
   <div class="col-12">
     <button class="btn btn-primary" (click)="navigate('')">Annuler</button>

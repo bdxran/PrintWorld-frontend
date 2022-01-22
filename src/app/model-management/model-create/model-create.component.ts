@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {Model, ModelService} from "../../services/model.service";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
 import {Category} from "../../services/category.service";
 import {SubCategory} from "../../services/sub-category.service";
+import {ImageService} from "../../services/image.service";
 
 @Component({
   selector: 'app-model-create',
@@ -15,28 +15,29 @@ export class ModelCreateComponent implements OnInit {
 
   public categories: Category[] = [
     // @ts-ignore
-    {id: 0, name:"Object"},
+    {id: 0, name: "Object"},
     // @ts-ignore
-    {id: 1, name:"Object1"},
+    {id: 1, name: "Object1"},
     // @ts-ignore
-    {id: 2, name:"Object2"},
+    {id: 2, name: "Object2"},
     // @ts-ignore
-    {id: 3, name:"Object3"}
+    {id: 3, name: "Object3"}
   ];
-
   public subCategories: SubCategory[] = [
     // @ts-ignore
-    {id: 0, name:"Object"},
+    {id: 0, name: "Object"},
     // @ts-ignore
-    {id: 1, name:"Object1"},
+    {id: 1, name: "Object1"},
     // @ts-ignore
-    {id: 2, name:"Object2"},
+    {id: 2, name: "Object2"},
     // @ts-ignore
-    {id: 3, name:"Object3"}
+    {id: 3, name: "Object3"}
   ];
+  public filePaths = new Map();
+  public images = new Map();
+  public imagesTmp = new Map();
+  public index: number = 1;
 
-  public images : string[] = [];
-  public photoSource : FileList;
   public modelForm = new FormGroup({
     name: new FormControl(),
     description: new FormControl(),
@@ -47,14 +48,77 @@ export class ModelCreateComponent implements OnInit {
     photoFile: new FormControl()
   })
 
+  public imageUpload = new FormGroup({
+    img: new FormControl(),
+  })
+
   constructor(private router: Router, private modelService: ModelService,
-              public fb: FormBuilder) {
+              public fb: FormBuilder, private imageService: ImageService) {
   }
 
   ngOnInit(): void {
   }
 
-  upload(event: Event) {
+  public imagePreview(event: Event) {
+    console.log("Preview image " + this.index);
+    const file = (event.target as HTMLInputElement).files[0];
+
+    this.images.set(this.index, file);
+    this.imagesTmp.set(this.index, file["name"]);
+
+    this.patchValue(file);
+
+    this.imageUpload.get('img').updateValueAndValidity();
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.filePaths.set(this.index, reader.result as string);
+      this.uploadImage();
+      this.index++;
+    }
+    reader.readAsDataURL(file);
+  }
+
+  private patchValue(image: File) {
+    this.imageUpload.patchValue({
+      img: image
+    });
+  }
+
+  private uploadImage() {
+    console.log("Upload Image")
+    var formData: any = new FormData();
+    formData.append("image", this.imageUpload.get("img").value);
+    let result;
+
+    this.imageService.uploadImage(formData).subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        console.log(error);
+      }
+    )
+  }
+
+  public counter(index: number) {
+    return new Array(index);
+  }
+
+  public remove(count: number) {
+    console.log("Delete image : " + count);
+    this.images.delete(count);
+    this.filePaths.delete(count);
+    this.imagesTmp.delete(count);
+    for (let i = count; i < this.images.size + 1; i++) {
+      this.images.set(i, this.images.get(i + 1));
+      this.filePaths.set(i, this.filePaths.get(i + 1));
+      this.imagesTmp.set(i, this.imagesTmp.get(i + 1));
+    }
+    this.index--;
+  }
+
+  public upload(event: Event) {
     const file = (event.target as HTMLInputElement).files[0];
     this.modelForm.patchValue({
       zip: file
@@ -62,39 +126,8 @@ export class ModelCreateComponent implements OnInit {
     this.modelForm.get('zip').updateValueAndValidity()
   }
 
-  get formValue(){
+  get formValue() {
     return this.modelForm.controls;
-  }
-
-  onFileChange(event: Event) {
-    if ((event.target as HTMLInputElement).files && (event.target as HTMLInputElement).files[0]) {
-      this.photoSource = (event.target as HTMLInputElement).files;
-      var filesAmount = (event.target as HTMLInputElement).files.length;
-      for (let i = 0; i < filesAmount; i++) {
-        var reader = new FileReader();
-        reader.onload = (event:any) => {
-          // Push Base64 string
-          this.images.push(event.target.result);
-          this.patchValues();
-        }
-        reader.readAsDataURL((event.target as HTMLInputElement).files[i]);
-      }
-    }
-  }
-
-  // Patch form Values
-  patchValues(){
-    this.modelForm.patchValue({
-      photoFile: this.photoSource
-    });
-    this.modelForm.get('photoFile').updateValueAndValidity()
-  }
-
-  // Remove Image
-  removeImage(){
-    this.images = [];
-    this.photoSource = undefined;
-    this.patchValues();
   }
 
   public createModel() {
@@ -105,8 +138,9 @@ export class ModelCreateComponent implements OnInit {
     var formData: any = new FormData();
 
     formData.append("file", this.modelForm.get("zip").value);
-    for (let i = 0; i < this.modelForm.get("photoFile").value.length; i++) {
-      formData.append("images", this.modelForm.get("photoFile").value.item(i));
+    for (let i = 1; i < this.imagesTmp.size + 1; i++) {
+      console.log(this.imagesTmp.get(i));
+      formData.append("images", this.imagesTmp.get(i));
     }
     formData.append("model", modelJson);
 
