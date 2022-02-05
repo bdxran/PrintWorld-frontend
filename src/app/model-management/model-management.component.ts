@@ -11,7 +11,7 @@ import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 export class ModelManagementComponent implements OnInit {
 
   private modelsJson: any;
-  public models: Array<Model>;
+  public models: Array<Model> = [{}] as Array<Model>;
   public numberPage: number;
   public indexPage: number;
 

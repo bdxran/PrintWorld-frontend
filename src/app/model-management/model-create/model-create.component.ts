@@ -89,7 +89,6 @@ export class ModelCreateComponent implements OnInit {
     console.log("Upload Image")
     var formData: any = new FormData();
     formData.append("image", this.imageUpload.get("img").value);
-    let result;
 
     this.imageService.uploadImage(formData).subscribe(
       data => {

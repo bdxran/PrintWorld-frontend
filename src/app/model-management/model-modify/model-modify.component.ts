@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router, ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Model, ModelService} from "../../services/model.service";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {Category} from "../../services/category.service";
@@ -15,31 +15,32 @@ export class ModelModifyComponent implements OnInit {
 
   public categories: Category[] = [
     // @ts-ignore
-    {id: 0, name:"Object"},
+    {id: 0, name: "Object"},
     // @ts-ignore
-    {id: 1, name:"Object1"},
+    {id: 1, name: "Object1"},
     // @ts-ignore
-    {id: 2, name:"Object2"},
+    {id: 2, name: "Object2"},
     // @ts-ignore
-    {id: 3, name:"Object3"}
+    {id: 3, name: "Object3"}
   ];
   public subCategories: SubCategory[] = [
     // @ts-ignore
-    {id: 0, name:"Object"},
+    {id: 0, name: "Object"},
     // @ts-ignore
-    {id: 1, name:"Object1"},
+    {id: 1, name: "Object1"},
     // @ts-ignore
-    {id: 2, name:"Object2"},
+    {id: 2, name: "Object2"},
     // @ts-ignore
-    {id: 3, name:"Object3"}
+    {id: 3, name: "Object3"}
   ];
   public filePaths = new Map();
   public images = new Map();
   public imagesTmp = new Map();
+  public imageIds = new Map();
   public index: number = 1;
-  public id: string;
   private modelsJson: any;
-  public model: Model;
+  public model: Model = {} as Model;
+  public countImage: number;
 
   public modelForm = new FormGroup({
     name: new FormControl(),
@@ -61,13 +62,51 @@ export class ModelModifyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.id = this.routerActive.snapshot.paramMap.get("id");
-    console.log(this.id)
+    let id = this.routerActive.snapshot.paramMap.get("id");
+    console.log(id);
 
-    this.modelService.findModelById(this.id).subscribe(
+    this.modelService.findModelById(id).subscribe(
       data => {
         this.modelsJson = JSON.stringify(data);
         this.model = JSON.parse(this.modelsJson);
+        this.countImage = this.model["imageIds"]?.length;
+
+        for (let idImage of this.model["imageIds"]) {
+          this.imageService.getImage(idImage).subscribe(
+            data => {
+              let imageJson = JSON.stringify(data);
+              let image = JSON.parse(imageJson);
+              var imageName = image["name"] + "." + image["extension"];
+
+              this.imageService.downloadImage(idImage).subscribe(
+                data => {
+                  console.log("Name image :" + imageName);
+
+                  let b: any = data;
+                  //A Blob() is almost a File() - it's just missing the two properties below which we will add
+                  b.lastModifiedDate = new Date();
+                  b.name = imageName;
+                  let file = <File>data;
+
+                  this.images.set(this.index, file);
+                  this.patchValue(file);
+                  this.imageUpload.get('img').updateValueAndValidity();
+
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    this.filePaths.set(this.index, reader.result as string);
+                    this.index++;
+                  }
+                  reader.readAsDataURL(file);
+
+                  this.images.set(this.index, file);
+                  this.imageIds.set(this.index, idImage);
+                }
+              );
+            });
+        }
+
+
         // @ts-ignore
         this.modelForm = this.fb.group({
           name: [this.model["name"]],
@@ -90,6 +129,7 @@ export class ModelModifyComponent implements OnInit {
 
     this.images.set(this.index, file);
     this.imagesTmp.set(this.index, file["name"]);
+    console.log("Name image : " + this.imagesTmp.get(this.index));
 
     this.patchValue(file);
 
@@ -114,7 +154,6 @@ export class ModelModifyComponent implements OnInit {
     console.log("Upload Image")
     var formData: any = new FormData();
     formData.append("image", this.imageUpload.get("img").value);
-    let result;
 
     this.imageService.uploadImage(formData).subscribe(
       data => {
@@ -140,7 +179,11 @@ export class ModelModifyComponent implements OnInit {
       this.filePaths.set(i, this.filePaths.get(i + 1));
       this.imagesTmp.set(i, this.imagesTmp.get(i + 1));
     }
+    this.countImage--;
     this.index--;
+    if (this.imageIds.get(count) != undefined) {
+      this.imageService.delete(this.imageIds.get(count))
+    }
   }
 
   upload(event: Event) {
@@ -151,7 +194,7 @@ export class ModelModifyComponent implements OnInit {
     this.modelForm.get('zip').updateValueAndValidity()
   }
 
-  get formValue(){
+  get formValue() {
     return this.modelForm.controls;
   }
 
@@ -168,7 +211,8 @@ export class ModelModifyComponent implements OnInit {
     } else {
       formData.append("file", null);
     }
-    for (let i = 1; i < this.imagesTmp.size + 1; i++) {
+    let realSizeImageTmp = this.imagesTmp.size + this.countImage + 1;
+    for (let i = this.countImage + 1; i < realSizeImageTmp; i++) {
       console.log(this.imagesTmp.get(i));
       formData.append("images", this.imagesTmp.get(i));
     }
