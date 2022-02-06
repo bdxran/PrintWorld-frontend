@@ -229,6 +229,19 @@ export class ModelModifyComponent implements OnInit {
     )
   }
 
+  public download(id: String) {
+    var filename = this.model["nameFile"] + ".zip";
+    this.modelService.download(id).subscribe(
+      data => {
+            const a = document.createElement('a')
+            const objectUrl = URL.createObjectURL(data)
+            a.href = objectUrl
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(objectUrl);
+      });
+  }
+
   public navigate(direction: any) {
     this.router.navigate([direction]);
   }

@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {API_URL} from "../../app-constants";
+import {Observable} from "rxjs";
 
 export class Model {
   private id: string | undefined;
@@ -56,7 +57,13 @@ export class ModelService {
     return this.http.post<String>(`${API_URL}/model/modify`, formData);
   }
 
-  public deleteModel(id: string) {
+  public deleteModel(id: String) {
     return this.http.delete<String>(`${API_URL}/model/delete/`+id);
+  }
+
+  public download(id: String): Observable<Blob> {
+    return this.http.get(`${API_URL}/model/download/`+id, {
+      responseType: 'blob'
+    });
   }
 }
